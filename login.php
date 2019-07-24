@@ -14,14 +14,13 @@ $password_encrypted = password_hash($password, PASSWORD_DEFAULT);
 // }
 // die();
 
-$login = mysql_query("select * from users where username='$username'");
+$login = mysql_query("SELECT * FROM users WHERE username='$username'");
 $cek = mysql_num_rows($login);
 
 if($cek > 0){
 	session_start();
 	$_SESSION['username'] = $username;
 	$_SESSION['status'] = "login";
-
 
 	header("location:qrcode.php");
 }else{

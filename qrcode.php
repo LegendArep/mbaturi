@@ -1,5 +1,11 @@
-
-<!-- -------------------------------------------------------------------------------------------->
+<?php
+// mengaktifkan session
+session_start();
+// cek apakah user telah login, jika belum login maka di alihkan ke halaman login
+if($_SESSION['status'] !="login"){
+    header("location:qrcode_verif.php");
+}
+?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -38,9 +44,9 @@
     <!-- Daterange picker -->
     <link rel="stylesheet" href="asset/admin/plugins/daterangepicker/daterangepicker-bs3.css">
     <style type="text/css"> .files{ position:absolute; z-index:2; top:0; left:0; filter: alpha(opacity=0);-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)"; opacity:0; background-color:transparent; color:transparent; } </style>
+    <!-- Select2 -->
+    <link rel="stylesheet" href="asset/admin/additional_pluggins/select2/dist/css/select2.min.css">
 
-    <link rel="stylesheet" href="asset/admin/plugins/select2/select2.css">
-    <link rel="stylesheet" href="asset/admin/plugins/select2/select2.min.css">
 
     <script type="text/javascript" src="asset/admin/plugins/jQuery/jquery-1.12.3.min.js"></script>
     <script src="asset/ckeditor/ckeditor.js"></script>
@@ -53,13 +59,7 @@
             t.value=t.value.replace(/\s/g,'');
         }
     }
-
-
     </script>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.6.3/js/bootstrap-select.min.js"></script>
 
 
   </head>
@@ -94,9 +94,8 @@
             <ul class="nav navbar-nav">
               <!-- User Account: style can be found in dropdown.less -->
               <li>
-                <a target='_BLANK' href="#"><i class="glyphicon glyphicon-new-window"></i></a>
+                <a href="logout.php"><i class="fa fa-sign-out"></i></a>
               </li>
-
             </ul>
           </div>
         </nav>
@@ -108,7 +107,7 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <center>
-            <a href="http://localhost/mbaturi/administrator/sertifikat">
+            <a href="administrator/sertifikat">
             <button type="button" class="btn btn-success btn-md"><i class="fa fa-arrow-left"></i>&nbsp;&nbsp;Back</button></a></center>
           </div>
 
@@ -146,6 +145,10 @@
           <?php include "application/views/administrator/footer.php"; ?>
       </footer>
     </div><!-- ./wrapper -->
+
+  <!-- Select2 -->
+  <script src="asset/admin/additional_pluggins/select2/dist/js/select2.full.min.js"></script>
+
     <!-- jQuery 2.1.4 -->
     <script src="asset/admin/plugins/jQuery/jQuery-2.1.4.min.js"></script>
     <!-- jQuery UI 1.11.4 -->

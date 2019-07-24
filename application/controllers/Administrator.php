@@ -2381,10 +2381,19 @@ class Administrator extends CI_Controller {
 
     function tambah_klien(){
         cek_session_akses('klien',$this->session->id_session);
+
+        // akan menghasilkan angka seperti 133758407476815300 18 digit selama 200 tahun ke depan. Jika lebih dari itu akan menjadi 17 digit dan seterusnya.
+        function getId() {
+            list($usec, $sec) = explode(" ", microtime());
+            return $sec . substr($usec, 2);
+        }
+        $genId = getId();
+
         if (isset($_POST['submit'])){
             $data = array('client_name_id'=>$this->db->escape_str($this->input->post('nama_klien')),
                         'scope'=>$this->input->post('scope'),
                         'main_site'=>$this->input->post('main_site'),
+                        'Id_token'=> $genId,
                         'created_by'=>$this->session->username);
             $this->model_app->insert('klien_list',$data);
             redirect($this->uri->segment(1).'/klien');

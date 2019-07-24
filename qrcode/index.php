@@ -46,65 +46,35 @@
 
 
 
+    //SESION LOGIN
 
-// echo "<h1>PHP QR Code</h1><hr/>";
+    include 'koneksi.php';
+    // menampilkan pesan selamat datang
+    // echo "Hai, selamat datang ".$_SESSION['username'];
+    $dbhost = 'localhost';
+    $dbuser = 'root';
+    $dbpass = '';
+    $server = "localhost";
+    $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 
+    if(! $conn ) {
+      die('Could not connect: ' . mysql_error());
+    }
 
+    $sql = 'SELECT email, username FROM users WHERE username="'.$_SESSION['username'].'"';
 
-//SESION LOGIN
+    mysql_select_db('db_mbaturi');
 
-include 'koneksi.php';
+    $retval = mysql_query( $sql, $conn );
+    $data_user = mysql_fetch_array($retval);
 
-
-
-// menampilkan pesan selamat datang
-
-// echo "Hai, selamat datang ". $_SESSION['username'];
-
-
-
-$dbhost = 'localhost';
-
-$dbuser = 'root';
-
-$dbpass = '';
-
-$server = "db_mbaturi";
-
-$conn = mysql_connect($dbhost, $dbuser, $dbpass);
-
-
-if (!$conn) {
-    
-    die('Could not connect: ' . mysql_error());
-    
-}
-
-
-// $sql = 'SELECT email, username, nama_lengkap FROM users WHERE username="' . $_SESSION['username'] . '"';
-
-// mysql_select_db('db_mbaturi');
-
-// $retval = mysql_query($sql, $conn);
-
-
-
-// $data_user = mysql_fetch_array($retval);
-
-
-
-//END SESION LOGIN
-
-
+     //END SESION LOGIN
 
 
 //set it to writable location, a place for temp generated PNG files
 
 // $PNG_TEMP_DIR = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'temp' . DIRECTORY_SEPARATOR;
-
 $PNG_TEMP_DIR = dirname(__FILE__) . DIRECTORY_SEPARATOR . '../images/qrcodes/' . DIRECTORY_SEPARATOR;
-
-
 
 //html PNG location prefix
 
@@ -118,9 +88,7 @@ if (!file_exists($PNG_TEMP_DIR))
     mkdir($PNG_TEMP_DIR);
 $filename = $PNG_TEMP_DIR . 'test.png';
 
-
 //processing form input
-
 //remember to sanitize user input in real-life solution !!!
 
 $errorCorrectionLevel = 'M';
@@ -133,110 +101,57 @@ if (isset($_REQUEST['level']) && in_array($_REQUEST['level'], array(
 )))
     $errorCorrectionLevel = $_REQUEST['level'];
 
-
-
 $matrixPointSize = 2;
 
 if (isset($_REQUEST['size']))
     $matrixPointSize = min(max((int) $_REQUEST['size'], 1), 10);
 
-
-
 @$clientName = trim($_REQUEST['namanya']);
-
 @$id_client_ind = trim($_REQUEST['id_client_ind']);
-
 @$name_client = trim($_REQUEST['name_client']);
-
 @$id_token = trim($_REQUEST['id_token']);
-
 @$clientcert_date = $_REQUEST['cert_date'];
-
 @$clientexp_date = $_REQUEST['exp_date'];
-
 @$practice = $_REQUEST['practice'];
-
 @$stdData = $_REQUEST['std'];
-
 @$hotel_start = $_REQUEST['hotel_start'];
 
 
 
 // PENGATURAN HARI
-
 $tglToday = date("Y-m-d");
-
-
-
 $tahun = date("Y");
-
 $a = 3;
-
 $tahun_jumlah = $tahun + $a;
-
-
-
 $hari = date("d");
-
 $b = 1;
-
 $hari_kurang = $hari - $b;
-
-
-
 $bulan = date("m");
 
 
-
+// akan menghasilkan angka seperti 133758407476815300 18 digit selama 200 tahun ke depan. Jika lebih dari itu akan menjadi 17 digit dan seterusnya.
 function getId(){
-    
     list($usec, $sec) = explode(" ", microtime());
-    
     return $sec . substr($usec, 2);
-    
-    // akan menghasilkan angka seperti 133758407476815300 18 digit selama 200 tahun ke depan. Jika lebih dari itu akan menjadi 17 digit dan seterusnya.
 }
 
 
+// setting redirect qrcode verifikasi
 $data = 'http://localhost/website_sendiri/mbaturi/certChk.php?';
-
 $msg = '';
 
 if (isset($data) && !empty($clientName) && (!empty($stdData))) {
     
     include "koneksi.php";
-    
-    
     $sql = 'SELECT COUNT(*) AS jumlah FROM klien_list WHERE client_name_id=\'' . $clientName . '\' ';
-    
     $res = mysql_query($sql);
-    
-    // echo $sql;
-    
+        
     if ((mysql_result($res, 0, 'jumlah') == 0)) {
-        
-        
-        
         $genId = getId();
-        
-        
-        
-        
-        
         if (mysql_query($sql)) {
-            
             $msg = 'New Certificate has been succesfully saved.<br>';
-            
-            
-            
             foreach ($stdData as $Key => $val) {
-                
-                // echo $Key.'='.$val;
-                
-                // $thn = substr($clientcert_date, 2, 2);
-                
                 $id_cert_ind = 'ERA-' . $val . '' . $id_client_ind;
-                
                 $sqlCert = 'INSERT INTO daftar_sertifikat (
 
                      id_cert_ind,
@@ -255,8 +170,6 @@ if (isset($data) && !empty($clientName) && (!empty($stdData))) {
 
                      status) ';
                 
-                
-                
                 $sqlCert .= 'VALUES (
 
                     \'' . $id_cert_ind . '\',
@@ -274,73 +187,32 @@ if (isset($data) && !empty($clientName) && (!empty($stdData))) {
                     \'' . $data_user['id'] . '\',
 
                     \'1\' )';
-                
-                
-                
                 mysql_query($sqlCert);
-                
             }
             
-            
-            
-            
-            
         } else {
-            
             $msg = 'New Client could not be saved. Please try agaian later.<br>';
-            
         }
         
-        
-        
         $data .= 'keywordNumt=' . $id_token . '';
-        
+
         //it's very important!
-        
-        
-        
         if (trim($data) == '')
             die('data cannot be empty! <a href="?">back</a>');
-        
-        
-        
         // user data
         
         $filename = $PNG_TEMP_DIR . 'cert_' . $name_client . '_' . $id_cert_ind . '.png';
-        
         QRcode::png($data, $filename, $errorCorrectionLevel, $matrixPointSize, 2);
-        
     } else {
-        
         $msg = $clientName . ' already exists in database. <br>';
-        
     }
-    
-    
-    
-    
-    
-    
-    
 } else {
-    
-    // echo 'Not Here';
-    
     //default data
-    
     // user data
-    
     if (!empty($clientName))
         $msg = 'Check back, empty data <br>';
-    
-    
-    
     @$filename = $PNG_TEMP_DIR . 'cert_' . $name_client . '_' . $id_cert_ind . '.png';
-    
     QRcode::png($data, $filename, $errorCorrectionLevel, $matrixPointSize, 2);
-    
-    
-    
 }
 
 
@@ -415,8 +287,8 @@ $type_iso = array(
 );
 
 
-
 //display generated file
+
 
 $path = basename($filename);
 echo "<font color='red' size='5'> $msg</font>";
@@ -451,8 +323,6 @@ echo '<!-- FORM -->
 
                     </div>';
 
-
-
 echo '<!-- spasi enter -->
 
            <div class="space-4"></div>';
@@ -473,39 +343,26 @@ while ($row = mysql_fetch_array($result_select))
 
 
 echo '<!-- Client Name -->
-
         <div class="form-group">
-
             <label for="form-field-select-3" class="col-sm-3 control-label no-padding-right" for="form-field-1">Client Name </label>
             <div class="col-sm-4">
-
-                <select name="id_client_ind" class="chosen-select" id="scripts" data-placeholder="Choose a Client..." data-show-subtext="true" data-live-search="true">
+                <select name="id_client_ind" class="form-control select2" id="scripts" data-placeholder="Choose a Client..." data-show-subtext="true" data-live-search="true">
                     <option value=""> </option>';
-                    
 
-foreach ($rows as $row) {
-    
-    $id_client = stripslashes($row['id_client_ind']);
-    
-    $name_client = stripcslashes($row['client_name_id']);
-    
-    $id_token = stripcslashes($row['Id_token']);
-    
-    $id_user = stripcslashes($row['created_by']);
-    
-    echo '<option id="' . $id_token . '" value="' . $id_client . '">' . $name_client . '</option>';
-    
-}
+                    foreach ($rows as $row) {
+                        $id_client = stripslashes($row['id_client_ind']);
+                        $name_client = stripcslashes($row['client_name_id']);
+                        $id_token = stripcslashes($row['Id_token']);
+                        $id_user = stripcslashes($row['created_by']);
+                        echo '<option id="' . $id_token . '" value="' . $id_client . '">' . $name_client . '</option>';
+                    }
 
 
 
 echo '</select>';
 
-
 echo '<input type="hidden" size="30" name="id_token" id="id_token" />';
-
 echo '<input type="hidden" size="30" name="name_client" id="name_client" />';
-
 
 
 echo '</div>
@@ -738,12 +595,7 @@ echo '<div class="clearfix form-actions">
 ?>
 
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
-
-
 <script type="text/javascript">
-
     $(function () {
         $("#chkPassport").click(function () {
 
@@ -763,13 +615,16 @@ echo '<div class="clearfix form-actions">
         });
     });
 
+    $(document).ready(function() {
+        $('.select2').select2()
+    });
+
     (function() {
 
         // get references to select list and display text box
         var sel = document.getElementById('scripts');
         var id_token = document.getElementById('id_token');
         var name_client = document.getElementById('name_client');
-
 
         function getSelectedOption(sel) {
             var opt;
@@ -797,19 +652,11 @@ echo '<div class="clearfix form-actions">
             name_client.value = sel.value;    
         }
 
-
         document.getElementById('doLoop').onclick = function () {
             var opt = getSelectedOption(sel);
             id_token.value = opt.value;
         }  
     }());
-
-
-$(document).ready(function() {
-    $('.js-example-basic-single').select2();
-});
-
-
 </script>
 
 
