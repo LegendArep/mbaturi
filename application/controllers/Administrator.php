@@ -2394,6 +2394,7 @@ class Administrator extends CI_Controller {
                         'scope'=>$this->input->post('scope'),
                         'main_site'=>$this->input->post('main_site'),
                         'Id_token'=> $genId,
+                        'status_client'=>$this->input->post('status'),
                         'created_by'=>$this->session->username);
             $this->model_app->insert('klien_list',$data);
             redirect($this->uri->segment(1).'/klien');
@@ -2408,6 +2409,7 @@ class Administrator extends CI_Controller {
         if (isset($_POST['submit'])){
             $data = array('client_name_id'=>$this->db->escape_str($this->input->post('nama_klien')),
                           'scope'=>$this->input->post('scope'),
+                          'status_client'=>$this->input->post('status'),
                           'main_site'=>$this->input->post('main_site'),
                           'created_by'=>$this->session->username);
 

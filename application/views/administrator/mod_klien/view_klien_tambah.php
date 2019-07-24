@@ -17,6 +17,12 @@
 
                     <tr><th width='120px' scope='row'>Alamat</th>  <td><textarea class='form-control' name='main_site'></textarea></td></tr>
 
+                    <tr><th width='120px' scope='row'>Status</th>  <td>
+                      <input type='radio'  name='status' value='1' checked>&nbsp;&nbsp;Aktif<br>
+                      <input type='radio' name='status' value='2'>&nbsp;&nbsp;TIdak Aktif<br>
+                    </td></tr>
+ 
+
                   </tbody>
                   </table>
                 </div>";

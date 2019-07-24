@@ -222,8 +222,7 @@
                                                    <input type="text"  id="keywordNum" data-plugin-masked-input data-input-mask="aaa-aaa9999" placeholder="ERA-HTL-1001" class="form-control" name="keywordNum">
                                                      <button name="submit" type="submit" id="Button1" class="btn v-btn v-btn-default v-small-button"><i class="fa fa-check"></i>VERIFY</button>
                                                 </form>
-                                            </div>
-                                        </div>
+                        </div>
 
             <?php include "koneksi.php";
         
@@ -311,7 +310,7 @@
                     }
                     echo '
                     <!-- HASIL VERIFIKASI -->
-                    <div class="col-md-12">
+                    <div class="col-md-6">
                         <h1>Client Information :</h1>
                             <table>
                             <tbody>

@@ -11,6 +11,7 @@
                         <th style='width:20px'>No</th>
                         <th>Nama Klien</th>
                         <th>Scope</th>
+                        <th>Status</th>
                         <th>Alamat</th>
                         <th style='width:70px'>Action</th>
                       </tr>
@@ -21,8 +22,13 @@
                     foreach ($record as $row){
                     echo "<tr><td>$no</td>
                               <td>$row[client_name_id]</td>
-                              <td>$row[scope]</td>
-                              <td>$row[main_site]</td>
+                              <td>$row[scope]</td>";
+                              if ($row[status_client] == 1) {
+                                echo"<td><span class='label label-success'>Aktif</span></td>";
+                              }else{
+                                echo"<td><span class='label label-danger'>Tidak Aktif</span></td>";
+                              }
+                     echo "<td>$row[main_site]</td>
                               <td><center>
                                 <a class='btn btn-success btn-xs' title='Edit Data' href='".base_url().$this->uri->segment(1)."/edit_klien/$row[id_client_ind]'><span class='glyphicon glyphicon-edit'></span></a>
                                 <a class='btn btn-danger btn-xs' title='Delete Data' href='".base_url().$this->uri->segment(1)."/delete_klien/$row[id_client_ind]' onclick=\"return confirm('Apa anda yakin untuk hapus Data ini?')\"><span class='glyphicon glyphicon-remove'></span></a>
