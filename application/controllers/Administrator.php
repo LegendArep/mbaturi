@@ -2443,7 +2443,7 @@ class Administrator extends CI_Controller {
     // Controller Sertifikat
 
     function sertifikat(){
-        cek_session_akses('klien',$this->session->id_session);
+        cek_session_akses('sertifikat',$this->session->id_session);
         if ($this->session->level=='admin'){
             $data['record'] = $this->model_app->view_ordering('v_get_daftar_sertifikat','id_client_ind','DESC');
         }else{
@@ -2453,39 +2453,39 @@ class Administrator extends CI_Controller {
     }
 
 
-    // function edit_sertifikat(){
-    //     cek_session_akses('klien',$this->session->id_session);
-    //     $id = $this->uri->segment(3);
-    //     if (isset($_POST['submit'])){
-    //         $data = array('client_name_id'=>$this->db->escape_str($this->input->post('nama_klien')),
-    //                       'scope'=>$this->input->post('scope'),
-    //                       'main_site'=>$this->input->post('main_site'),
-    //                       'created_by'=>$this->session->username);
-
-    //         $where = array('id_client_ind' => $this->input->post('id'));
-
-    //         $this->model_app->update('klien_list', $data, $where);
-    //         redirect($this->uri->segment(1).'/klien');
-    //     }else{
-    //         if ($this->session->level=='admin'){
-    //              $proses = $this->model_app->edit('klien_list', array('id_client_ind' => $id))->row_array();
-    //         }else{
-    //             $proses = $this->model_app->edit('klien_list', array('id_client_ind' => $id, 'username' => $this->session->username))->row_array();
-    //         }
-    //         $data = array('rows' => $proses);
-    //         $this->template->load('administrator/template','administrator/mod_sertifikat/view_sertifikat_edit',$data);
-    //     }
-    // }
-
-    function delete_sertifikat(){
+    function edit_sertifikat(){
         cek_session_akses('sertifikat',$this->session->id_session);
-        if ($this->session->level=='admin'){
-            $id = array('id' => $this->uri->segment(3));
+        $id = $this->uri->segment(3);
+        if (isset($_POST['submit'])){
+            $data = array('status'=>$this->db->escape_str($this->input->post('status')),
+                          'certificate_date'=>$this->input->post('certificate_date'),
+                          'expiration_date'=>$this->input->post('expiration_date'));
+
+            $where = array('id' => $this->input->post('id'));
+
+            $this->model_app->update('daftar_sertifikat', $data, $where);
+            redirect($this->uri->segment(1).'/sertifikat');
         }else{
-            $id = array('id' => $this->uri->segment(3), 'username'=>$this->session->username);
+            if ($this->session->level=='admin'){
+                 $proses = $this->model_app->edit('daftar_sertifikat', array('id' => $id))->row_array();
+            }else{
+                $proses = $this->model_app->edit('daftar_sertifikat', array('id' => $id, 'username' => $this->session->username))->row_array();
+            }
+            $data = array('rows' => $proses);
+            $this->template->load('administrator/template','administrator/mod_sertifikat/view_sertifikat_edit',$data);
         }
-        $this->model_app->delete('daftar_sertifikat',$id);
-        redirect($this->uri->segment(1).'/sertifikat');
+    }
+
+    function view_sertifikat(){
+        cek_session_akses('sertifikat',$this->session->id_session);
+        $id = $this->uri->segment(3);
+        if ($this->session->level=='admin'){
+                 $proses = $this->model_app->edit('daftar_sertifikat', array('id' => $id))->row_array();
+            }else{
+                $proses = $this->model_app->edit('daftar_sertifikat', array('id' => $id, 'username' => $this->session->username))->row_array();
+            }
+            $data = array('rows' => $proses);
+            $this->template->load('administrator/template','administrator/mod_sertifikat/view_cert',$data);
     }
 
     // Controller Modul Sekilas Info
@@ -3048,4 +3048,126 @@ class Administrator extends CI_Controller {
  
     return $ipaddress;
     }
+
+    //************************************************************************************************//
+    function Training(){
+        cek_session_akses('training',$this->session->id_session);
+            $data['record'] = $this->model_app->view_ordering('training','id_training','DESC');
+        $this->template->load('administrator/template','administrator/mod_training/training',$data);
+    }
+
+   function tambah_training(){
+        cek_session_akses('training',$this->session->id_session);
+        if (isset($_POST['submit'])){
+            $config['upload_path'] = 'asset/training/';
+            $config['allowed_types'] = 'gif|jpg|png|JPG|JPEG';
+            $config['max_size'] = '3000'; // kb
+            $this->load->library('upload', $config);
+            $this->upload->do_upload('k');
+            $hasil=$this->upload->data();
+            if ($hasil['file_name']==''){
+                    $data = array('judul'=>$this->db->escape_str($this->input->post('a')),
+                                    'isi'=>$this->input->post('b'),
+                                    'seo_judul'=>seo_title($this->input->post('a')),
+                                    'isi_keterangan'=>$this->input->post('d'));
+
+            }else{
+                    $data = array('judul'=>$this->db->escape_str($this->input->post('a')),
+                                    'isi'=>$this->input->post('b'),
+                                    'seo_judul'=>seo_title($this->input->post('a')),
+                                    'isi_keterangan'=>$this->input->post('d'),
+                                    'gambar'=>$hasil['file_name']);
+            }
+            $this->model_app->insert('training',$data);
+            redirect($this->uri->segment(1).'/training');
+        }else{
+            $this->template->load('administrator/template','administrator/mod_training/tambah');
+        }
+    }
+
+    function edit_training(){
+        cek_session_akses('training',$this->session->id_session);
+        $id = $this->uri->segment(3);
+        if (isset($_POST['submit'])){
+            $config['upload_path'] = 'asset/training/';
+            $config['allowed_types'] = 'gif|jpg|png|JPG|JPEG';
+            $config['max_size'] = '3000'; // kb
+            $this->load->library('upload', $config);
+            $this->upload->do_upload('k');
+            $hasil=$this->upload->data();
+            if ($hasil['file_name']==''){
+                    $data = array('judul'=>$this->db->escape_str($this->input->post('a')),
+                                    'isi'=>$this->input->post('b'),
+                                    'seo_judul'=>seo_title($this->input->post('a')),
+                                    'isi_keterangan'=>$this->input->post('d'));
+            }else{
+                    $data = array('judul'=>$this->db->escape_str($this->input->post('a')),
+                                    'isi'=>$this->input->post('b'),
+                                    'seo_judul'=>seo_title($this->input->post('a')),
+                                    'isi_keterangan'=>$this->input->post('d'),
+                                    'gambar'=>$hasil['file_name']);
+            }
+            $where = array('id_training' => $this->input->post('id'));
+            $this->model_app->update('training', $data, $where) or die (mysql_error());
+            redirect($this->uri->segment(1).'/training');
+        }else{
+            $proses = $this->model_app->edit('training', array('id_training' => $id))->row_array();
+            $data = array('rows' => $proses);
+            $this->template->load('administrator/template','administrator/mod_training/edit',$data);
+        }
+    }
+
+    function delete_training(){
+        cek_session_akses('training',$this->session->id_session);
+            $id = array('id_training' => $this->uri->segment(3));
+        $this->model_app->delete('training',$id);
+        redirect($this->uri->segment(1).'/training');
+    }
+//********************************************************************//
+
+//************************************************************************************************//
+    function jadwal(){
+        cek_session_akses('jadwal',$this->session->id_session);
+            $data['record'] = $this->model_app->view_ordering('v_jadwal_training','id_schedule','DESC');
+        $this->template->load('administrator/template','administrator/mod_jadwal_training/view_jadwal_training',$data);
+    }
+
+   function tambah_jadwal(){
+        cek_session_akses('jadwal',$this->session->id_session);
+        if (isset($_POST['submit'])){
+            $data = array('id_training'=>$this->db->escape_str($this->input->post('id_training')),
+                        'tanggal_awal'=>$this->input->post('tanggal_awal'),
+                        'tanggal_akhir'=>$this->input->post('tanggal_akhir'),
+                        'status'=>$this->input->post('status'));
+                        $this->model_app->insert('training_schedule',$data);
+            redirect($this->uri->segment(1).'/jadwal');
+        }else{
+            $this->template->load('administrator/template','administrator/mod_jadwal_training/jadwal_training_tambah');
+        }    
+    }
+
+    function edit_jadwal(){
+        cek_session_akses('jadwal',$this->session->id_session);
+        $id = $this->uri->segment(3);
+        if (isset($_POST['submit'])){
+            $data = array('id_training'=>$this->db->escape_str($this->input->post('id_training')),
+                        'tanggal_awal'=>$this->input->post('tanggal_awal'),
+                        'tanggal_akhir'=>$this->input->post('tanggal_akhir'),
+                        'status'=>$this->input->post('status'));
+
+            $where = array('id_schedule' => $this->input->post('id'));
+
+            $this->model_app->update('training_schedule', $data, $where);
+            redirect($this->uri->segment(1).'/jadwal');
+        }else{
+            if ($this->session->level=='admin'){
+                 $proses = $this->model_app->edit('training_schedule', array('id_schedule' => $id))->row_array();
+            }else{
+                $proses = $this->model_app->edit('training_schedule', array('id_schedule' => $id, 'username' => $this->session->username))->row_array();
+            }
+            $data = array('rows' => $proses);
+            $this->template->load('administrator/template','administrator/mod_jadwal_training/jadwal_training_edit',$data);
+        }
+    }
+//********************************************************************//    
 }

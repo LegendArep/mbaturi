@@ -1,4 +1,6 @@
 <?php
+$base_url = (isset($_SERVER['HTTPS']) ? "https://" : "http://").$_SERVER['HTTP_HOST'];
+$pusat_url = $base_url."/developer";
 
 /*
 
@@ -54,7 +56,7 @@
     $dbhost = 'localhost';
     $dbuser = 'root';
     $dbpass = '';
-    $server = "localhost";
+    $server = "db_mbaturi";
     $conn = mysql_connect($dbhost, $dbuser, $dbpass);
 
     if(! $conn ) {
@@ -137,7 +139,7 @@ function getId(){
 
 
 // setting redirect qrcode verifikasi
-$data = 'http://localhost/website_sendiri/mbaturi/certChk.php?';
+$data = $pusat_url.'/certChk.php?';
 $msg = '';
 
 if (isset($data) && !empty($clientName) && (!empty($stdData))) {
@@ -150,8 +152,14 @@ if (isset($data) && !empty($clientName) && (!empty($stdData))) {
         $genId = getId();
         if (mysql_query($sql)) {
             $msg = 'New Certificate has been succesfully saved.<br>';
-            foreach ($stdData as $Key => $val) {
-                $id_cert_ind = 'ERA-' . $val . '' . $id_client_ind;
+            
+            // -------Cacah kata untuk tanggal mulai cert--------------
+            $sasah_kata = (explode("-",$clientcert_date));
+            $wulan = $sasah_kata[1];
+            $taun = substr($sasah_kata[0],2);
+            // --------------------------------------------------
+                
+                $id_cert_ind = 'MKT-' . $stdData . '-'.$wulan.'-'.$taun;
                 $sqlCert = 'INSERT INTO daftar_sertifikat (
 
                      id_cert_ind,
@@ -166,8 +174,6 @@ if (isset($data) && !empty($clientName) && (!empty($stdData))) {
 
                      expiration_date,
 
-                     created_by,
-
                      status) ';
                 
                 $sqlCert .= 'VALUES (
@@ -176,7 +182,7 @@ if (isset($data) && !empty($clientName) && (!empty($stdData))) {
 
                     \'' . $id_client_ind . '\',
 
-                    \'' . $Key . '\',
+                    \'' . $stdData . '\',
 
                     \'' . $hotel_start . '\',
 
@@ -184,11 +190,8 @@ if (isset($data) && !empty($clientName) && (!empty($stdData))) {
 
                     \'' . $clientexp_date . '\',
 
-                    \'' . $data_user['id'] . '\',
-
                     \'1\' )';
                 mysql_query($sqlCert);
-            }
             
         } else {
             $msg = 'New Client could not be saved. Please try agaian later.<br>';
@@ -219,15 +222,10 @@ if (isset($data) && !empty($clientName) && (!empty($stdData))) {
 // type scope
 $type_iso = array(
     
-    "1" => array(
+    "1" => array(        
+        "mark" => 'SISTEM MANAJEMEN KESELAMATAN DAN KESEHATAN KERJA',
         
-        "logo" => 'htl',
-        
-        "mark" => 'PERMEN PAREKRAF No.53 Tahun 2013 Tentang STANDAR USAHA HOTEL',
-        
-        "litword" => 'HTL',
-        
-        "word" => 'STANDAR USAHA HOTEL<br>&nbsp;'
+        "litword" => '1011'
         
     ),
     
@@ -235,54 +233,9 @@ $type_iso = array(
     
     "2" => array(
         
-        "logo" => 'jpw',
+        "mark" => 'ISO 9001:2015',
         
-        "mark" => 'PERMEN PAREKRAF No.8 Tahun 2014 Tentang STANDAR USAHA JASA PERJALANAN WISATA',
-        
-        "litword" => 'JPW',
-        
-        "word" => 'STANDAR USAHA JASA PERJALANAN WISATA<br>&nbsp;'
-        
-    ),
-    
-    
-    
-    "3" => array(
-        
-        "logo" => 'dis',
-        
-        "mark" => 'PERMEN PAREKRAF No.20 Tahun 2014 Tentang STANDAR USAHA DISKOTIK',
-        
-        "litword" => 'DIS',
-        
-        "word" => 'STANDAR USAHA DISKOTIK'
-        
-    ),
-    
-    
-    
-    "4" => array(
-        
-        "logo" => 'klb',
-        
-        "mark" => 'PERMEN PAREKRAF No.21 Tahun 2014 Tentang STANDAR USAHA KELAB MALAM',
-        
-        "litword" => 'KLB',
-        
-        "word" => 'STANDAR USAHA KELAB MALAM<br>&nbsp;'
-        
-    ),
-    
-    "5" => array(
-        
-        "logo" => 'res',
-        
-        "mark" => 'PERMEN PAREKRAF No.11 Tahun 2014 Tentang STANDAR USAHA RESTORAN',
-        
-        "litword" => 'RES',
-        
-        "word" => 'STANDAR USAHA RESTORAN<br>&nbsp;'
-        
+        "litword" => '1012'
     )
 );
 
@@ -295,7 +248,7 @@ echo "<font color='red' size='5'> $msg</font>";
 echo '<img width="100px" src="' . $PNG_WEB_DIR . basename($filename) . '" />';
 if (!empty($clientName)) {
     
-    echo '<a target = "_blank" href="qrcode/downcode.php?nama=cert_' . $name_client . '_' . $id_cert_ind . '&filenya=' . $path . '" ><font color="blue" size="3">download file </font></a> <hr/>';
+    // echo '<a target = "_blank" href="qrcode/downcode.php?nama=cert_' . $name_client . '_' . $id_cert_ind . '&filenya=' . $path . '" ><font color="blue" size="3">download file </font></a> <hr/>';
     
 }
 
@@ -345,7 +298,7 @@ while ($row = mysql_fetch_array($result_select))
 echo '<!-- Client Name -->
         <div class="form-group">
             <label for="form-field-select-3" class="col-sm-3 control-label no-padding-right" for="form-field-1">Client Name </label>
-            <div class="col-sm-4">
+            <div class="col-sm-5">
                 <select name="id_client_ind" class="form-control select2" id="scripts" data-placeholder="Choose a Client..." data-show-subtext="true" data-live-search="true">
                     <option value=""> </option>';
 
@@ -376,82 +329,108 @@ echo '<!-- spasi enter -->
            <div class="space-4"></div>';
 
 
+echo ' <!-- Pelatihan -->
+                    <div class="form-group">
 
-echo ' <!-- Standard -->
+                                <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Pelatihan </label>
 
-        <div class="form-group">
+                                <div class="col-sm-5">
 
-            <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Standard </label>
+                                            <select name="std" class="form-control" id="form-field-select-1">
 
-                <div class="col-sm-9">
+                                            '; 
+                                            $query_select = "SELECT * FROM training";
+                                            $result_select = mysql_query($query_select) or die(mysql_error());
+                                            $rows = array();
+                                            while ($row = mysql_fetch_array($result_select))
+                                                $rows[] = $row;
+                                            foreach ($rows as $row) {
+                                                // $id_client = stripslashes($row['id_training']);
+                                                // $name_client = stripcslashes($row['judul']);
+                                                // var_dump($id)
+                                echo '          <option value="' . $row['id_training'] .'">' . $row['judul'] . '</option>'; }
 
-                        <div class="control-group">
+                                echo '       </select>
+                                        </div>
+                                    </div>
+                                    ';                                    
+
+
+// echo ' <!-- Standard -->
+
+//         <div class="form-group">
+
+//             <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Standard </label>
+
+//                 <div class="col-sm-9">
+
+//                         <div class="control-group">
 
 
 
-                            <!-- #section:custom/checkbox -->';
-                            foreach ($type_iso as $isoKey => $valIso) {
+//                             <!-- #section:custom/checkbox -->';
+//                             foreach ($type_iso as $isoKey => $valIso) {
                                 
-                                echo '<div class="checkbox">
+//                                 echo '<div class="checkbox">
 
-                                                            <label>
+//                                                             <label>
 
-                                                                <input id="chkPassport" name="std[' . $isoKey . ']" value="' . $valIso['litword'] . '" type="checkbox" class="ace" />
+//                                                                 <input id="chkPassport" name="std[' . $isoKey . ']" value="' . $valIso['litword'] . '" type="checkbox" class="ace" />
 
-                                                                <span class="lbl">  ' . $valIso['mark'] . '</span>
+//                                                                 <span class="lbl">  ' . $valIso['mark'] . '</span>
 
-                                                            </label>
+//                                                             </label>
 
-                                                            </div>';
-                            }
-
-
+//                                                             </div>';
+//                             }
 
 
 
 
 
-echo '                 </div>
 
-                </div>
 
-                <!-- Choose Hotel Star -->
+// echo '                 </div>
 
-                <div id="dvPassport" style="display: none">
+//                 </div>
 
-                    <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Choose Hotel Star </label>
+//                 <!-- Choose Hotel Star -->
 
-                        <div class="col-sm-9">
+//                 <div id="dvPassport" style="display: none">
 
-                            <div class="container">
+//                     <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Choose Hotel Star </label>
 
-                                <div class="row">
+//                         <div class="col-sm-9">
 
-                                <div class="rating">
+//                             <div class="container">
 
-                                  <input type="radio" id="star5" name="hotel_start" value="5" /><label for="star5" title="Bintang 5">5 stars</label>
+//                                 <div class="row">
 
-                                  <input type="radio" id="star4" name="hotel_start" value="4" /><label for="star4" title="Bintang 4">4 stars</label>
+//                                 <div class="rating">
 
-                                  <input type="radio" id="star3" name="hotel_start" value="3" /><label for="star3" title="Bintang 3">3 stars</label>
+//                                   <input type="radio" id="star5" name="hotel_start" value="5" /><label for="star5" title="Bintang 5">5 stars</label>
 
-                                  <input type="radio" id="star2" name="hotel_start" value="2" /><label for="star2" title="Bintang 2">2 stars</label>
+//                                   <input type="radio" id="star4" name="hotel_start" value="4" /><label for="star4" title="Bintang 4">4 stars</label>
 
-                                  <input type="radio" id="star1" name="hotel_start" value="1" /><label for="star1" title="Bintang 1">1 star</label>
+//                                   <input type="radio" id="star3" name="hotel_start" value="3" /><label for="star3" title="Bintang 3">3 stars</label>
 
-                                </div>
+//                                   <input type="radio" id="star2" name="hotel_start" value="2" /><label for="star2" title="Bintang 2">2 stars</label>
 
-                                </div>
+//                                   <input type="radio" id="star1" name="hotel_start" value="1" /><label for="star1" title="Bintang 1">1 star</label>
 
-                            </div>
+//                                 </div>
 
-                        </div>
+//                                 </div>
 
-                </div>
+//                             </div>
 
-                </br>
+//                         </div>
 
-        </div>';
+//                 </div>
+
+//                 </br>
+
+//         </div>';
 
 
 
@@ -469,11 +448,11 @@ echo '<!-- Practice -->
 
             <label class="col-sm-3 control-label no-padding-right" for="form-field-1">Practice </label>
 
-            <div class="col-sm-4">
+            <div class="col-sm-3">
 
                 <select name="practice" class="form-control" id="form-field-select-1">
 
-                    <option value="1">Era Kualitas Indonesia</option>
+                    <option value="1">Mbaturi Sertifikasi</option>
 
                 </select>
 
@@ -596,24 +575,24 @@ echo '<div class="clearfix form-actions">
 
 
 <script type="text/javascript">
-    $(function () {
-        $("#chkPassport").click(function () {
+    // $(function () {
+    //     $("#chkPassport").click(function () {
 
-            if ($(this).is(":checked")) {
+    //         if ($(this).is(":checked")) {
 
-                $("#dvPassport").show();
+    //             $("#dvPassport").show();
 
-                $("#AddPassport").hide();
+    //             $("#AddPassport").hide();
 
-            } else {
+    //         } else {
 
-                $("#dvPassport").hide();
+    //             $("#dvPassport").hide();
 
-                $("#AddPassport").show();
+    //             $("#AddPassport").show();
 
-            }
-        });
-    });
+    //         }
+    //     });
+    // });
 
     $(document).ready(function() {
         $('.select2').select2()

@@ -50,6 +50,22 @@
                   echo "<li><a href='".base_url().$this->uri->segment(1)."/service'><i class='fa fa-circle-o'></i> Service</a></li>";
                 }
 
+                $cek=$this->model_app->umenu_akses("pelatihan",$this->session->id_session);
+                if($cek==1 OR $this->session->level=='admin'){
+                  echo '<li class="treeview"><a href="javascript:void(0)"><i class="fa fa-circle-o"></i> Pelatihan <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>';
+                }
+
+                $cek=$this->model_app->umenu_akses("pelatihan",$this->session->id_session);
+                if($cek==1 OR $this->session->level=='admin'){
+                  echo "<ul class='treeview-menu'>
+                        <li><a href='".base_url().$this->uri->segment(1)."/training'><i class='fa fa-circle-o'></i> Data Pelatihan</a></li>";
+                }
+
+                $cek=$this->model_app->umenu_akses("pelatihan",$this->session->id_session);
+                if($cek==1 OR $this->session->level=='admin'){
+                  echo "<li><a href='".base_url().$this->uri->segment(1)."/jadwal'><i class='fa fa-circle-o'></i> Jadwal Pelatihan</a></li></ul></li>";
+                }              
+
                 $cek=$this->model_app->umenu_akses("project",$this->session->id_session);
                 if($cek==1 OR $this->session->level=='admin'){
                   echo "<li><a href='".base_url().$this->uri->segment(1)."/project'><i class='fa fa-circle-o'></i> Project</a></li>";

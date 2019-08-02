@@ -1,10 +1,13 @@
+<?php
+$base_url = (isset($_SERVER['HTTPS']) ? "https://" : "http://").$_SERVER['HTTP_HOST'];
+$pusat_url = $base_url."/mbaturi";
+?>
 <!DOCTYPE HTML>
 <html lang="en">
 
 <head>
     <title>Verifikasi Sertifikat</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="robots" content="index, follow">
@@ -17,10 +20,9 @@
 
     <link rel="canonical" href="halaman/verifikasi-sertifikat" />
     <link rel="shortcut icon" href="asset/images/mbaturi_circle.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <!-- Mobile Specific Metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="stylesheet" type="text/css" href="template/consuloan/stylesheets/bootstrap.css">
 
@@ -50,6 +52,7 @@
         <script src="javascript/html5shiv.js"></script>
         <script src="javascript/respond.min.js"></script>
     <![endif]-->
+    </style>
 </head>
 
 <body class="header_sticky">
@@ -120,7 +123,7 @@
                                 <div class="nav-wrap clearfix">
                                     <nav id="mainnav" class="mainnav style2 color-93a float-left">
                                         <ul class='the-menu'>
-                                            <li><a href=''>Beranda</a></li>
+                                            <li><a href='<?php echo $pusat_url; ?>'>Beranda</a></li>
                                             <li><a href='halaman/tentang-kami'>Profil</a></li>
                                             <li><a href='service'>Layanan</a></li>
                                             <li><a href='training'><span>Training</span></a>
@@ -197,35 +200,28 @@
                 <div class="row">
                         <div class="float-left">
                             <h1 class="title">Verifikasi Sertifikat</h1>
-                            <section class="flat-row project-single">
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="single-post">
-                                                <div class="single-text1">
-                                                    <h2>Sekilas info verifikasi sertifikasi</h2>
-                                                    <p>Setiap sertifikat yang dikeluarkan oleh Lembaga terkait baik itu sertifikasi ISO maupun sertifikasi lainnya seluruhnya memiliki nomer seri sertifikat yang bisa di cek keabsahannya. Masukkan saja nama peserta dan nomor sertifikat untuk memulai verifikasinya. Jika Anda merasa telah melakukan sertifikasi dan mendapatkan sertifikat dari Lembaga terkait namun tidak terdata nomer serinya di veritifkasi sertifikasi ini. Silahkan kontak ke data berikut :</p>
-                                                    <div class="project-info">
-                                                        <h4>Kontak Pelayanan</h4>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                            <!--   -->
                                         <!-- /.col-md-6 -->
                                         <div class="col-lg-6">
                                             <div class="featured-single">
 
                                                 <h4>Ayo Verifikasi Sertifikatmu</h4>
                                                  <form action="certChk.php" class="form-horizontal form-bordered"  method="post" accept-charset="utf-8">
-                                                    <input type="text" class="form-control" placeholder="Company Name" id="keywordIName" name="keywordName">
+                                                    <input type="text" class="form-control" placeholder="Nama Perusahaan" id="keywordIName" name="keywordName">
                                                     <br>
-                                                   <input type="text"  id="keywordNum" data-plugin-masked-input data-input-mask="aaa-aaa9999" placeholder="ERA-HTL-1001" class="form-control" name="keywordNum">
-                                                     <button name="submit" type="submit" id="Button1" class="btn v-btn v-btn-default v-small-button"><i class="fa fa-check"></i>VERIFY</button>
+                                                   <input type="text"  id="keywordNum" data-plugin-masked-input data-input-mask="aaa-aaa9999" placeholder="MKT-1001-07-19" class="form-control" name="keywordNum">
+                                                     <button name="submit" type="submit" id="Button1" class="btn v-btn v-btn-default v-small-button">VERIFY</button>
                                                 </form>
                                             </div>
                                         </div>
 
-            <?php include "koneksi.php";
+                </div><!-- /.col-md-6 --> 
+            </div><!-- /.row -->        
+        </div><!-- /.container -->   
+    </section>
+    <?php include "koneksi.php";
         
             @$name = $_POST['keywordName']; //get the nama value from form
             @$certNum = $_POST['keywordNum']; //get the nama value from form
@@ -311,7 +307,7 @@
                     }
                     echo '
                     <!-- HASIL VERIFIKASI -->
-                    <div class="col-md-12">
+                    <div class="col-md-12" style="padding: 70px 30px 0px 30px;">
                         <h1>Client Information :</h1>
                             <table>
                             <tbody>
@@ -335,17 +331,16 @@
                     ';
 
 
-                    $qCert = "SELECT * from $daftar_sertifikat where id_client_ind = '$data[id_client_ind]' ORDER BY certificate_date, type_iso "; //query to get the search result
+                    $qCert = "SELECT * from v_get_daftar_sertifikat where id_client_ind = '$data[id_client_ind]' ORDER BY certificate_date, judul "; //query to get the search result
                     $resultCert = mysql_query($qCert); //execute the query $q
                     $line = 0;
                     while ($dataCert = mysql_fetch_array($resultCert)) {
                         $line++;
-                        $iso['type_iso'][$line]             = $dataCert['type_iso'];
+                        $iso['judul'][$line]                = $dataCert['judul'];
                         $iso['id_cert_ind'][$line]          = $dataCert['id_cert_ind'];
-                        $iso['scope'][$line]     = $dataCert['scope'];
                         $iso['certificate_date'][$line]     = $dataCert['certificate_date'];
                         $iso['expiration_date'][$line]      = $dataCert['expiration_date'];
-                        $iso['status'][$line]      = $dataCert['status'];
+                        $iso['status'][$line]               = $dataCert['status'];
                         // echo '<a href="images/clients/cert/'.$dataCert['cert_scan'].'" target="_blank" title="click here to open this file">'.$dataCert['id_cert_ind'].'</a>';
                     }
 
@@ -355,8 +350,8 @@
                     ';
 
                     echo '
-                        <div class="table-responsive">
-                            <table class="table table-hover ">
+                        <div style="overflow-x:auto; overflow-y:auto;">
+                            <table class="table table-hover">
                               <thead>
                                 <tr>
                                   <th scope="col">Certificate Number(s)</th>
@@ -375,13 +370,13 @@
                                     $no_cert = $iso['id_cert_ind'][$i];
                                 echo '<tr>
                                   <th scope="row">'.$no_cert.'</th>
-                                  <td>'.$type_iso[$iso['type_iso'][$i]]["mark"].'</td>
+                                  <td>'.$iso['judul'][$i].'</td>
                                   <td>'.date_format(date_create($iso['certificate_date'][$i]), "d M Y" ).'</td>
                                   <td>'.date_format(date_create($iso['expiration_date'][$i]), "d M Y" ).'</td>';
                                   if ($iso['status'][$i]=='5'){
                                   echo'<td><span class="v-menu-item-info bg-danger">';
                                    }else{
-                                     echo'<td><span class="v-menu-item-info bg-success">';
+                                     echo'<td><span class="v-menu-item-info" style="background-color: #03b900; color: white;">';
                                  }
                                 echo $status[$iso['status'][$i]];
                                 echo '</span></td>';
@@ -400,11 +395,6 @@
 
 
             ?>
-
-                </div><!-- /.col-md-6 --> 
-            </div><!-- /.row -->        
-        </div><!-- /.container -->   
-    </section>
 
     <!-- Modal -->
 <div id="myModal" class="modal fade" role="dialog">

@@ -390,7 +390,6 @@
     <script src="<?php echo base_url(); ?>template/<?php echo template(); ?>/javascript/jquery-waypoints.js"></script>
     <script src="<?php echo base_url(); ?>template/<?php echo template(); ?>/javascript/jquery-validate.js"></script>
     <script src="<?php echo base_url(); ?>template/<?php echo template(); ?>/javascript/jquery.cookie.js"></script>
-
     <script src="<?php echo base_url(); ?>template/<?php echo template(); ?>/javascript/owl.carousel.js"></script>
     <script src="<?php echo base_url(); ?>template/<?php echo template(); ?>/javascript/jquery.flexslider-min.js"></script>
     <script src="<?php echo base_url(); ?>template/<?php echo template(); ?>/javascript/headline.js"></script>
@@ -400,8 +399,6 @@
     <script src="<?php echo base_url(); ?>template/<?php echo template(); ?>/javascript/jquery.fancybox.js"></script>
     <script src="<?php echo base_url(); ?>template/<?php echo template(); ?>/javascript/gmap3.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtwK1Hd3iMGyF6ffJSRK7I_STNEXxPdcQ&region=GB"></script>
-
-
     <script src="<?php echo base_url(); ?>template/<?php echo template(); ?>/javascript/main.js"></script>
 
     <!-- Revolution Slider -->

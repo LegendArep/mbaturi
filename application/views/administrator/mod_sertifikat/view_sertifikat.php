@@ -27,11 +27,22 @@
                               <td>$row[id_cert_ind]</td>
                               <td>$row[client_name_id]</td>
                               <td>$row[certificate_date]</td>
-                              <td>$row[expiration_date]</td>
-                              <td>$row[status]</td>
+                              <td>$row[expiration_date]</td>";
+
+                              $teks_status ="";
+                              if ($row[status]==1) {
+                                $teks_status ="Aprroved";
+                              } elseif ($row[status]==2) {
+                                $teks_status ="Suspend";
+                              } elseif ($row[status]==3) {
+                                $teks_status ="Withdraw";
+                              } else {
+                                $teks_status ="Hide";
+                              }
+                    echo "    <td>".$teks_status."</td>
                               <td><center>
-                                <a class='btn btn-success btn-xs' title='Edit Data' href='".base_url().$this->uri->segment(1)."/edit_klien/$row[id]'><span class='glyphicon glyphicon-edit'></span></a>
-                                <a class='btn btn-danger btn-xs' title='Delete Data' href='".base_url().$this->uri->segment(1)."/delete_sertifikat/$row[id]' onclick=\"return confirm('Apa anda yakin untuk hapus Data ini?')\"><span class='glyphicon glyphicon-remove'></span></a>
+                                <a class='btn btn-success btn-xs' title='Edit Data' href='".base_url().$this->uri->segment(1)."/edit_sertifikat/$row[id]'><span class='glyphicon glyphicon-edit'></span></a>
+                                <a class='btn btn-info btn-xs' title='Edit Data' href='".base_url()."/view_cert.php?id=$row[id]'><span class='glyphicon glyphicon-open-file'></span></a>
                               </center></td>
                           </tr>";
                       $no++;

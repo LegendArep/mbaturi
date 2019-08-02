@@ -71,6 +71,11 @@ $route = array(
     'daftaremail' => 'daftaremail',
     'staff' => 'staff',
     'tag' => 'tag',
+
+// ---------------Arep's code----------------------
+    'training' => 'training',
+    'sertifikat' => 'sertifikat',
+    'jadwal' => 'jadwal',
 );
 
 $route['(:any)'] = 'news/$1/$2';
@@ -81,9 +86,15 @@ $route['halaman/(:any)'] = 'halaman/detail/$1';
 $route['albums/(:any)'] = 'albums/detail/$1';
 $route['agenda/(:any)'] = 'agenda/detail/$1';
 $route['klien/(:any)'] = 'klien/detail/$1';
-$route['sertifikat/(:any)'] = 'sertifikat/detail/$1';
 $route['kategori/(:any)'] = 'kategori/detail/$1';
 $route['kategori/(:any)'] = 'kategori/detail/$1/$2';
 $route['staff/(:any)'] = 'staff/detail/$1';
+
+// ---------------Arep's code----------------------
+$route['training/(:any)'] = 'training/detail/$1';
+$route['sertifikat/(:any)'] = 'sertifikat/detail/$1';
+$route['jadwal/(:any)'] = 'jadwal/detail/$1';
+// ---------------Arep's code----------------------
+
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
